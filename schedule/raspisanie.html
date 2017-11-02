@@ -91,9 +91,9 @@
 					var cell = $("#"+rowid+" > td[name=\""+cellname+"\"]");
 					cell.html(createSelector(cell.html()));
 					if ((lastY>=0) && (lastX>=0)){
-						var lastcell = $("#"+lastY+" > td[name=\""+lastX+"\"]");
-						lastcell.attr("click", "editGroup("+lastY+", "+lastX+")");
+						var lastcell = $("#"+lastY+" > td[name=\""+lastX+"\"]");\
 						lastcell.html(lastcell.children("select").val());
+						lastcell.attr("onclick", "editGroup("+lastY+", "+lastX+")");
 					}
 					cell.attr("onclick", "");
 				}
