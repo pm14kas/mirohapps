@@ -1,0 +1,122 @@
+<html>
+	<head>
+		<script src="jquery-2.1.3.js"></script>
+		<meta charset="utf-8">
+		<title>Расписание</title>
+	</head>
+	<body>
+		<style>
+			table {
+				margin-top: 20px;
+				margin-bottom: 20px;
+				border-collapse: collapse;
+				border-spacing: 0;
+			}
+			table > thead > tr > th,
+			table > thead > tr > td,
+			table > tbody > tr > th,
+			table > tbody > tr > td,
+			table > tfoot > tr > th,
+			table > tfoot > tr > td {
+			  padding: 8px;
+			  line-height: 1.5384615385;
+			}
+			td {
+				height: 40px;
+				min-width: 100px;
+			}
+			
+			tr {
+				min-height: 40px;
+			}
+		</style>
+		
+		<table id="maintable" border=1>
+			<thead id="mainheader">
+			
+			</thead>
+		</table>
+		<script>
+			var time = ["08:00-09:30", "09:40-11:10", "11:20-12:50", "13:20-14:50", "15:00-16:30", "16:40-18:10", "18:20-19:30", "20:00-21:30"];
+			var room = ["9-401", "9-402", "9-403", "9-404", "9-405"];
+			var grouplist = ["ПМ-14-2", "ПМ-14-1", "УК-12-2"];
+			var groups = generateGroups();
+			
+			var lastX = -1;
+			var lastY = -1;
+
+			
+			var table = $("#maintable");
+			var header = $("#mainheader");
+			header.append("<th>Время</th>");
+			for (var i = 0; i < room.length; i++){
+				header.append("<th>"+room[i]+"</th>");
+			}
+			for (var i = 0; i < time.length*2; i++){
+				var string = "<tr id=\""+i+"\"><td rowspan=2>"+time[i/2]+"</td>";
+				for (var j = 0; j < room.length; j++) {
+					if (groups[i][j]==undefined) groups[i][j]="";
+					string+="<td name=\""+j+"\" onclick=\"editGroup("+i+","+j+")\">"+groups[i][j]+"</td>"
+				}
+				string+="</tr>";
+				i++;
+				string+="<tr id=\""+i+"\">";
+				for (var j = 0; j < room.length; j++) {
+					if (groups[i][j]==undefined) groups[i][j]="";
+					string+="<td name=\""+j+"\" bgcolor=\"#00ff00\" onclick=\"editGroup("+i+","+j+")\">"+groups[i][j]+"</td>"
+				}
+				string+="</tr>";
+				table.append(string);
+			}
+			
+			function generateGroups() {
+				var gruppen = new Array(time.length*2);
+				for (var i = 0; i < time.length * 2; i++){
+					gruppen[i] = new Array(room.length);
+				}
+				
+				for (var n = 0; n < 20; n++){
+					var i = Math.floor(Math.random()*time.length*2);
+					var j = Math.floor(Math.random()*room.length);
+					var k = Math.floor(Math.random()*grouplist.length);
+					gruppen[i][j] = grouplist[k];
+				}
+				
+				return gruppen;
+			}
+			
+			function editGroup(rowid, cellname) {
+				if ((rowid!=lastY) || (cellname!=lastX)){
+					var cell = $("#"+rowid+" > td[name=\""+cellname+"\"]");
+					cell.html(createSelector(cell.html()));
+					if ((lastY>=0) && (lastX>=0)){
+						var lastcell = $("#"+lastY+" > td[name=\""+lastX+"\"]");
+						lastcell.attr("click", "editGroup("+lastY+", "+lastX+")");
+						lastcell.html(lastcell.children("select").val());
+					}
+					cell.attr("onclick", "");
+				}
+				lastX = cellname;
+				lastY = rowid;
+			}
+			
+			function createSelector(oldoption) {
+				var string = "<select>";
+				if (oldoption!=""){
+					string+="<option>"+oldoption+"</options>";
+				}
+				string+="<option></options>";
+
+				for (var i = 0; i < grouplist.length; i++){
+					if (grouplist[i]!=oldoption){
+						string+="<option>"+grouplist[i]+"</options>";
+					}
+				}
+				string+="</options>";
+				return string;
+			}
+		</script>
+		
+		
+	</body>
+</html>
